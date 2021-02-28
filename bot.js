@@ -4,56 +4,39 @@ const Discord = require('discord.js');
 
 const compute = new Compute();
 const client = new Discord.Client();
+const zone = compute.zone(process.env.ZONE);
+const vm = zone.vm(process.env.SERVER);
+
+vm.get().then(function (data) {
+    vm = data[0];
+}).catch((error) => {
+    console.log(error);
+});
 
 client.once('ready', () => {
     console.log('Ready!');
 });
 
 client.on('message', message => {
-    // LIST
     if (message.content === '!list') {
         message.channel.send('Here is a list of servers:')
-        compute.getVMs()
-            .then((vms) => {
-                vms.forEach(vm => {
-                    message.channel.send(vm[0].name + ': ' + vm[0].metadata.status)
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        message.channel.send(`${vm[0].name}: ${vm[0].metadata.status}`)
     }
-    // START
+
     if (message.content === '!start') {
         message.channel.send('Trying to start the server...')
 
-        compute.getVMs()
-            .then((vms) => {
-                const vm = vms.filter(vm => vm[0].name == process.env.SEVER_NAME)[0][0]
-                vm.start().then((data) => {
-                    const apiResponse = data[1];
-                    message.channel.send(apiResponse.status);
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        vm.start().then((data) => {
+            message.channel.send(`Server responsed with :${data[1].status}`);
+        });
     }
-    // STOP
     if (message.content === '!stop') {
         message.channel.send('Trying to stop the server...')
 
-        compute.getVMs()
-            .then((vms) => {
-                const vm = vms.filter(vm => vm[0].name == process.env.SEVER_NAME)[0][0]
-                vm.stop().then((data) => {
-                    const apiResponse = data[1];
-                    message.channel.send(apiResponse.status);
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        vm.stop().then((data) => {
+            message.channel.send(`Server responsed with :${data[1].status}`);
+        });
+
     }
 });
 
