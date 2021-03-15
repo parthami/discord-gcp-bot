@@ -1,6 +1,12 @@
 # Background 
 
-A simple Docker image of a JS Discord bot that interacts with a GCP Compute Engine VM
+A simple exercise in learning more about 
+* Docker
+* Google Artifact Registry
+* Google Cloud Run
+* Discord Bots
+
+A Docker image of a JS Discord bot that interacts with a GCP Compute Engine VM
 
 # Commands
 
